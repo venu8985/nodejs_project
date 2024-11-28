@@ -4,7 +4,8 @@
   "description": "A project to convert YouTube to MP3",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "postinstall": "npm install -g yt-dlp"
   },
   "dependencies": {
     "express": "^4.21.1",
