@@ -4,6 +4,12 @@ module.exports = (app) => {
   const { exec } = require("child_process");
   const ffmpeg = require("fluent-ffmpeg");
 
+  // Ensure the downloads folder exists
+  const tempDir = path.join(__dirname, "downloads");
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir);
+  }
+
   // Define the video download route
   app.get("/download-video", (req, res) => {
     const url = req.query.url;
@@ -11,8 +17,8 @@ module.exports = (app) => {
       return res.status(400).json({ error: "No URL provided" });
     }
 
-    const cleanUrl = url.trim();
-    const tempFile = path.join(__dirname, `input_${Date.now()}.webm`); // Expecting .webm format
+    const cleanUrl = url.trim().split("?")[0]; // Remove any query parameters
+    const tempFile = path.join(tempDir, `input_${Date.now()}.webm`); // Expecting .webm format
     const outputFile = tempFile.replace(".webm", ".mp4"); // Change the extension to .mp4 for final download
 
     exec("which yt-dlp", (err, stdout, stderr) => {
@@ -22,7 +28,7 @@ module.exports = (app) => {
       }
 
       const ytDlpPath = "/usr/local/bin/yt-dlp";
-      const command = `${ytDlpPath} -f bestvideo+bestaudio --output "${tempFile}" ${cleanUrl}`;
+      const command = `${ytDlpPath} -f bestvideo+bestaudio --output "${tempFile}" ${cleanUrl} --verbose`;
 
       console.log("yt-dlp command:", command);
 
@@ -34,7 +40,8 @@ module.exports = (app) => {
             .json({ error: `yt-dlp error: ${stderr || err.message}` });
         }
 
-        console.log("yt-dlp output:", stdout);
+        console.log("yt-dlp stdout:", stdout);
+        console.error("yt-dlp stderr:", stderr);
 
         // Check if the merged .webm file exists
         if (!fs.existsSync(tempFile)) {
