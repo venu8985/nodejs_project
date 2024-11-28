@@ -4,7 +4,7 @@ const path = require("path");
 const ffmpeg = require("fluent-ffmpeg");
 const { exec } = require("child_process");
 const app = express();
-
+require("./videoDownloader")(app);
 // Ensure you use Render's dynamic port or default to 8081 if 8080 is in use
 const port = process.env.PORT || 8081;
 
