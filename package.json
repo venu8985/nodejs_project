@@ -1,0 +1,16 @@
+{
+  "name": "node_project",
+  "version": "1.0.0",
+  "description": "A project to convert YouTube to MP3",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "fluent-ffmpeg": "^2.1.3",
+    "ytdl-core": "^4.9.1"
+  },
+  "author": "",
+  "license": "ISC"
+}
