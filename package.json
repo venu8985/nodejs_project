@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "postinstall": "apt-get update && apt-get install -y ffmpeg python3-pip && pip3 install yt-dlp"
+    "postinstall": "pip3 install yt-dlp && curl -sSL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-i686-static.tar.xz | tar -xJf - -C /usr/local/bin --strip-components=1 && ln -s /usr/local/bin/yt-dlp /usr/bin/yt-dlp"
   },
   "dependencies": {
     "express": "^4.21.1",
