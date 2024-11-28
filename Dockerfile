@@ -1,26 +1,22 @@
-# Use the node:16-slim base image
 FROM node:16-slim
 
-# Set the working directory for the application
+# Set the working directory
 WORKDIR /usr/src/app
 
-# Install necessary dependencies
-RUN apt-get update && \
-    apt-get install -y ffmpeg python3-pip curl && \
-    # Install yt-dlp
+# Install dependencies for yt-dlp and ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg python3-pip && \
+    pip3 install --upgrade pip && \
     pip3 install yt-dlp && \
-    # Verify yt-dlp installation and path
-    yt-dlp --version && \
-    which yt-dlp
+    ln -s /usr/local/bin/yt-dlp /usr/bin/yt-dlp  # Ensure yt-dlp is in /usr/bin
 
-# Copy package.json and package-lock.json and install node dependencies
+# Copy package.json and install node modules
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application files
+# Copy the rest of the app
 COPY . .
 
-# Expose port 8080 (or change this to match your app's port)
+# Expose the port the app runs on
 EXPOSE 8080
 
 # Command to run the app
