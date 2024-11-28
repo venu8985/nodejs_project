@@ -1,36 +1,28 @@
-# Stage 1: Build dependencies
-FROM node:16-slim AS builder
+# Use an official Node.js 18 image (Debian-based)
+FROM node:18-buster
 
-# Set working directory
-WORKDIR /usr/src/app
+# Install dependencies (ffmpeg, python3-pip, and yt-dlp)
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    python3-pip \
+    curl && \
+    pip3 install yt-dlp && \
+    apt-get clean
 
-# Install dependencies for yt-dlp and ffmpeg
-RUN apt-get update && apt-get install -y ffmpeg python3-pip && \
-    pip3 install --upgrade pip && \
-    pip3 install yt-dlp
+# Set the working directory in the container
+WORKDIR /app
 
-# Copy Node.js dependencies
+# Copy package.json and package-lock.json for efficient caching
 COPY package*.json ./
+
+# Install project dependencies
 RUN npm install
 
-# Copy the rest of the app
+# Copy the rest of the application files
 COPY . .
 
-# Stage 2: Create final image with necessary binaries
-FROM node:16-slim
+# Expose the port your app runs on (e.g., 8080)
+EXPOSE 8080
 
-# Set working directory
-WORKDIR /usr/src/app
-
-# Copy dependencies and files from the builder stage
-COPY --from=builder /usr/src/app /usr/src/app
-
-# Copy yt-dlp from the builder stage
-COPY --from=builder /usr/local/bin/yt-dlp /usr/local/bin/yt-dlp
-COPY --from=builder /usr/bin/ffmpeg /usr/bin/ffmpeg
-
-# Expose the port
-# EXPOSE 8080
-
-# Run the app
+# Command to run your app
 CMD ["node", "app.js"]

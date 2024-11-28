@@ -4,8 +4,7 @@
   "description": "A project to convert YouTube to MP3",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "postinstall": "pip3 install yt-dlp && curl -sSL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-i686-static.tar.xz | tar -xJf - -C /usr/local/bin --strip-components=1 && ln -s /usr/local/bin/yt-dlp /usr/bin/yt-dlp"
+    "start": "node app.js"
   },
   "dependencies": {
     "express": "^4.21.1",
