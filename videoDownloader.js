@@ -47,7 +47,12 @@ module.exports = (app) => {
         // Check if the merged .webm file exists
         if (!fs.existsSync(tempFile)) {
           console.error("Merged video file not found:", tempFile);
-          return res.status(500).json({ error: "Merged video file not found" });
+          return res
+            .status(500)
+            .json({
+              error:
+                "Merged video file not found. Check yt-dlp logs for errors.",
+            });
         }
 
         // Convert the .webm file to .mp4 using ffmpeg
@@ -68,8 +73,12 @@ module.exports = (app) => {
               }
 
               // Clean up temporary files after sending the file
-              fs.unlinkSync(tempFile);
-              fs.unlinkSync(outputFile);
+              try {
+                fs.unlinkSync(tempFile);
+                fs.unlinkSync(outputFile);
+              } catch (cleanupErr) {
+                console.error("Error during cleanup:", cleanupErr.message);
+              }
             });
           })
           .on("error", (err) => {
