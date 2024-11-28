@@ -7,7 +7,10 @@ WORKDIR /usr/src/app
 RUN apt-get update && apt-get install -y ffmpeg python3-pip && \
     pip3 install --upgrade pip && \
     pip3 install yt-dlp && \
-    ln -s /usr/local/bin/yt-dlp /usr/bin/yt-dlp  # Ensure yt-dlp is in /usr/bin
+    ln -s /usr/local/bin/yt-dlp /usr/bin/yt-dlp  # Create a symbolic link
+
+# Confirm yt-dlp installation
+RUN which yt-dlp && yt-dlp --version
 
 # Copy package.json and install node modules
 COPY package*.json ./

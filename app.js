@@ -22,6 +22,7 @@ app.get("/convert", (req, res) => {
   console.log("System PATH:", process.env.PATH);
 
   exec("which yt-dlp", (err, stdout, stderr) => {
+    console.log("which yt-dlp output:", stdout.trim());
     if (err || stderr) {
       console.error("yt-dlp not found:", stderr || err.message);
       return res.status(500).json({ error: "yt-dlp not found in PATH" });
