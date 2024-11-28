@@ -4,7 +4,7 @@ const path = require("path");
 const ffmpeg = require("fluent-ffmpeg");
 const { exec } = require("child_process");
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 // Define the endpoint to convert the video to mp3
 app.get("/convert", (req, res) => {
@@ -65,5 +65,5 @@ app.get("/convert", (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
 });
