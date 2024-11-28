@@ -1,9 +1,9 @@
-module.exports = (app) => {
-  const fs = require("fs");
-  const path = require("path");
-  const { exec } = require("child_process");
-  const ffmpeg = require("fluent-ffmpeg");
+const fs = require("fs");
+const path = require("path");
+const { exec } = require("child_process");
+const ffmpeg = require("fluent-ffmpeg");
 
+module.exports = (app) => {
   // Ensure the downloads folder exists
   const tempDir = path.join(__dirname, "downloads");
   if (!fs.existsSync(tempDir)) {
@@ -21,13 +21,14 @@ module.exports = (app) => {
     const tempFile = path.join(tempDir, `input_${Date.now()}.webm`); // Expecting .webm format
     const outputFile = tempFile.replace(".webm", ".mp4"); // Change the extension to .mp4 for final download
 
+    // Check if yt-dlp is installed
     exec("which yt-dlp", (err, stdout, stderr) => {
       if (err || stderr) {
         console.error("yt-dlp not found:", stderr || err.message);
         return res.status(500).json({ error: "yt-dlp not found in PATH" });
       }
 
-      const ytDlpPath = "/usr/local/bin/yt-dlp";
+      const ytDlpPath = "/usr/local/bin/yt-dlp"; // Adjust this if needed
       const command = `${ytDlpPath} -f bestvideo+bestaudio --output "${tempFile}" ${cleanUrl} --verbose`;
 
       console.log("yt-dlp command:", command);
@@ -45,7 +46,7 @@ module.exports = (app) => {
 
         // Check if the merged .webm file exists
         if (!fs.existsSync(tempFile)) {
-          console.error("Output .webm file not found:", tempFile);
+          console.error("Merged video file not found:", tempFile);
           return res.status(500).json({ error: "Merged video file not found" });
         }
 
@@ -57,7 +58,7 @@ module.exports = (app) => {
               `Video conversion to MP4 completed. File is ready at ${outputFile}`
             );
 
-            // Send the converted .mp4 file
+            // Send the converted .mp4 file to the client
             res.download(outputFile, (err) => {
               if (err) {
                 console.error("File send error:", err.message);
