@@ -28,7 +28,7 @@ app.get("/convert", (req, res) => {
       return res.status(500).json({ error: "yt-dlp not found in PATH" });
     }
 
-    const ytDlpPath = stdout.trim(); // Ensure yt-dlp path is correct
+    const ytDlpPath = "/usr/local/bin/yt-dlp";
     console.log("yt-dlp path:", ytDlpPath);
 
     const command = `${ytDlpPath} -f bestaudio --output "${tempFile}" ${cleanUrl}`;
