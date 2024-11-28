@@ -34,15 +34,16 @@ module.exports = (app) => {
       console.log("yt-dlp command:", command);
 
       exec(command, (err, stdout, stderr) => {
+        // Log the output and error from yt-dlp to help debug
+        console.log("yt-dlp stdout:", stdout);
+        console.error("yt-dlp stderr:", stderr);
+
         if (err) {
           console.error("yt-dlp error:", stderr || err.message);
           return res
             .status(500)
             .json({ error: `yt-dlp error: ${stderr || err.message}` });
         }
-
-        console.log("yt-dlp stdout:", stdout);
-        console.error("yt-dlp stderr:", stderr);
 
         // Check if the merged .webm file exists
         if (!fs.existsSync(tempFile)) {
